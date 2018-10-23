@@ -731,6 +731,12 @@ public class SyncManager {
         boolean success = false;
         while (!success && attempts > 0) {
             try {
+                for (SyncSession value : sessions.values()) {
+                    if (value.getState() != SyncSession.State.INACTIVE) {
+                        RealmLog.error("Session in unexpected state: " + value.getState() + " in " + value.getConfiguration().getPath() );
+                    }
+                    value.stop();
+                }
                 nativeReset();
                 sessions.clear();
                 hostRestrictedAuthorizationHeaderName.clear();
