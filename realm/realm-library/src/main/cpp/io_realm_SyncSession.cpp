@@ -237,6 +237,8 @@ JNIEXPORT jbyte JNICALL Java_io_realm_SyncSession_nativeGetState(JNIEnv* env, jc
                 case SyncSession::PublicState::Inactive:
                     return io_realm_SyncSession_STATE_VALUE_INACTIVE;
             }
+        } else {
+            return io_realm_SyncSession_STATE_VALUE_INACTIVE;
         }
     }
     CATCH_STD()
