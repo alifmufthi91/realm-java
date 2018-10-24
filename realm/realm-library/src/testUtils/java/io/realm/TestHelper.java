@@ -944,7 +944,7 @@ public class TestHelper {
     }
 
     public interface LooperTest {
-        CountDownLatch getRealmClosedSignal();
+//        CountDownLatch getRealmClosedSignal();
         Looper getLooper();
         Throwable getAssertionError();
     }
@@ -968,7 +968,7 @@ public class TestHelper {
             }
 
             // Waits for the finally block to execute and closes the Realm.
-            TestHelper.awaitOrFail(test.getRealmClosedSignal());
+//            TestHelper.awaitOrFail(test.getRealmClosedSignal());
             // Closes the executor.
             // This needs to be called after waiting since it might interrupt waitRealmThreadExecutorFinish().
             executorService.shutdownNow();

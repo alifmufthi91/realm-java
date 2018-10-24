@@ -220,9 +220,18 @@ public class RunInLooperThread extends TestRealmConfigurationFactory {
      * Signal that the test has completed.
      * <p>
      * Used on both the main and test threads.
-     * Valid after {@code before}.
      */
     public void testComplete() {
+        // Close all resources and run any after test tasks
+        try {
+            closeResources();
+            closeRealms();
+            for (Runnable task : runAfterTestIsComplete) {
+                task.run();
+            }
+        } catch (Throwable t) {
+            throw new AssertionError("Failed to correctly close down resources", t);
+        }
         signalTestCompleted.countDown();
     }
 
@@ -315,6 +324,8 @@ public class RunInLooperThread extends TestRealmConfigurationFactory {
      * This will run on the same thread as the looper test.
      */
     public void looperTearDown() {
+        // Do nothing
+        // Override in test classes if needed.
     }
 
     private void initRealm() {
@@ -461,11 +472,11 @@ public class RunInLooperThread extends TestRealmConfigurationFactory {
             this.base = base;
         }
 
-        @Override
-        public CountDownLatch getRealmClosedSignal() {
-            return signalClosedRealm;
-        }
-
+//        @Override
+//        public CountDownLatch getRealmClosedSignal() {
+//            return signalClosedRealm;
+//        }
+//
         @Override
         public synchronized Looper getLooper() {
             return looper;
@@ -500,19 +511,18 @@ public class RunInLooperThread extends TestRealmConfigurationFactory {
                 setAssertionError(t);
                 setUnitTestFailed();
             } finally {
-                try {
-                    looperTearDown();
-                    closeResources();
-                    for (Runnable task : runAfterTestIsComplete) {
-                        task.run();
-                    }
-                } catch (Throwable t) {
-                    setAssertionError(t);
-                    setUnitTestFailed();
-                }
-                testComplete();
-                closeRealms();
-                signalClosedRealm.countDown();
+//                try {
+//                    closeResources();
+//                    for (Runnable task : runAfterTestIsComplete) {
+//                        task.run();
+//                    }
+//                } catch (Throwable t) {
+//                    setAssertionError(t);
+//                    setUnitTestFailed();
+//                }
+//                testComplete();
+//                closeRealms();
+//                signalClosedRealm.countDown();
             }
         }
     }
